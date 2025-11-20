@@ -12,17 +12,7 @@ if [ ! -f "$BINARY" ]; then
     exit 1
 fi
 
-# Set dual-directory environment variables
-MODULE_METADATA_DIR="/data/adb/modules"
-MODULE_METADATA_SOURCE="KSU"
-MODULE_METADATA_LOGFILE="/data/adb/mm.log"
-
-if [ -f "$MODULE_METADATA_LOGFILE" ]; then
-    mv "$MODULE_METADATA_LOGFILE" "$MODULE_METADATA_LOGFILE".old
-fi
-
-# Execute the mount binary
-"$BINARY" -s "$MODULE_METADATA_SOURCE" -m "$MODULE_METADATA_DIR" -v -l "$MODULE_METADATA_LOGFILE"
+$BINARY
 
 EXIT_CODE=$?
 

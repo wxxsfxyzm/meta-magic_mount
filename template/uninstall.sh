@@ -6,7 +6,6 @@
 
 MODDIR="${0%/*}"
 
-rm -rf /data/adb/mm.log
-rm -rf /data/adb/mm.log.bak
+rm -rf /data/adb/magic_mount
 
 exit 0
