@@ -11,7 +11,7 @@ use anyhow::Result;
 use extattr::lgetxattr;
 use rustix::path::Arg;
 
-use crate::magic_mount::{REPLACE_DIR_FILE_NAME, REPLACE_DIR_XATTR};
+use crate::defs::{REPLACE_DIR_FILE_NAME, REPLACE_DIR_XATTR};
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub(super) enum NodeFileType {

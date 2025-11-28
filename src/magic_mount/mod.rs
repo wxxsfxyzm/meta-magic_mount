@@ -19,18 +19,13 @@ use rustix::{
 };
 
 use crate::{
+    defs::{DISABLE_FILE_NAME, REMOVE_FILE_NAME, SKIP_MOUNT_FILE_NAME},
     magic_mount::{
         node::{Node, NodeFileType},
         try_umount::send_unmountable,
     },
     utils::{ensure_dir_exists, lgetfilecon, lsetfilecon},
 };
-
-pub(super) const DISABLE_FILE_NAME: &str = "disable";
-pub(super) const REMOVE_FILE_NAME: &str = "remove";
-pub(super) const SKIP_MOUNT_FILE_NAME: &str = "skip_mount";
-pub(super) const REPLACE_DIR_FILE_NAME: &str = ".replace";
-pub(super) const REPLACE_DIR_XATTR: &str = "trusted.overlay.opaque";
 
 pub static UMOUNT: AtomicBool = AtomicBool::new(false);
 

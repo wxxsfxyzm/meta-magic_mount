@@ -1,17 +1,16 @@
 mod config;
+mod defs;
 mod magic_mount;
 mod utils;
 
 use std::io::Write;
 
 use anyhow::{Context, Result};
-use config::{CONFIG_FILE_DEFAULT, Config};
 use env_logger::Builder;
 
-use crate::magic_mount::UMOUNT;
+use crate::{config::Config, defs::CONFIG_FILE_DEFAULT, magic_mount::UMOUNT};
 
 fn load_config() -> Result<Config> {
-    // 2. 尝试从默认位置加载
     if let Ok(config) = Config::load_default() {
         log::info!(
             "Loaded config from default location: {}",
@@ -20,7 +19,6 @@ fn load_config() -> Result<Config> {
         return Ok(config);
     }
 
-    // 3. 使用默认配置
     log::info!("Using default configuration (no config file found)");
     Ok(Config::default())
 }

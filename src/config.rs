@@ -3,7 +3,7 @@ use std::{fs, path::PathBuf};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
-pub const CONFIG_FILE_DEFAULT: &str = "/data/adb/magic_mount/config.toml";
+use crate::defs::CONFIG_FILE_DEFAULT;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {

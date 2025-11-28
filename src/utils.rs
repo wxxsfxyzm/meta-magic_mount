@@ -7,11 +7,9 @@ use anyhow::{Context, Result, bail};
 #[cfg(any(target_os = "linux", target_os = "android"))]
 use extattr::{Flags as XattrFlags, lsetxattr};
 
-const SELINUX_XATTR: &str = "security.selinux";
-
-const TEMP_DIR_SUFFIX: &str = ".magic_mount";
-
-const TMPFS_CANDIDATES: &[&str] = &["/mnt/vendor", "/mnt", "/debug_ramdisk"];
+#[cfg(any(target_os = "linux", target_os = "android"))]
+use crate::defs::SELINUX_XATTR;
+use crate::defs::{TEMP_DIR_SUFFIX, TMPFS_CANDIDATES};
 
 pub fn lsetfilecon<P: AsRef<Path>>(path: P, con: &str) -> Result<()> {
     #[cfg(any(target_os = "linux", target_os = "android"))]
