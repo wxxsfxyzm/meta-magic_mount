@@ -10,6 +10,7 @@ authors = ["7a72", "Tools-cx-app", "YuzakiKokuban"]
 license = "GPL-3.0"
 
 [package.metadata.magic_mount_rs]
+name = "Magic Mount-rs"
 update = "https://github.com/Tools-cx-app/meta-magic_mount/raw/master/update/update.json"
 
 [dependencies]

@@ -25,6 +25,7 @@ struct Metadata {
 #[derive(Deserialize)]
 struct Update {
     update: String,
+    name: String,
 }
 
 fn main() -> Result<()> {
@@ -95,7 +96,7 @@ fn gen_module_prop(data: &CargoConfig) -> Result<()> {
         .open("module/module.prop")?;
 
     writeln!(file, "id={id}")?;
-    writeln!(file, "name={}", package.name)?;
+    writeln!(file, "name={}", package.metadata.magic_mount_rs.name)?;
     writeln!(file, "version=v{}", version.trim())?;
     writeln!(file, "versionCode={version_code}")?;
     writeln!(file, "author={author}")?;
