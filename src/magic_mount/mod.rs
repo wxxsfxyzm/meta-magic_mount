@@ -5,7 +5,6 @@ use std::{
     fs::{self, DirEntry, create_dir, create_dir_all, read_dir, read_link},
     os::unix::fs::{MetadataExt, symlink},
     path::Path,
-    sync::atomic::AtomicBool,
 };
 
 use anyhow::{Context, Result, bail};
@@ -26,8 +25,6 @@ use crate::{
     },
     utils::{ensure_dir_exists, lgetfilecon, lsetfilecon},
 };
-
-pub static UMOUNT: AtomicBool = AtomicBool::new(false);
 
 fn collect_module_files(module_dir: &Path, extra_partitions: &[String]) -> Result<Option<Node>> {
     let mut root = Node::new_root("");
@@ -167,7 +164,13 @@ where
 }
 
 #[allow(clippy::too_many_lines)]
-fn do_magic_mount<P>(path: P, work_dir_path: P, current: Node, has_tmpfs: bool) -> Result<()>
+fn do_magic_mount<P>(
+    path: P,
+    work_dir_path: P,
+    current: Node,
+    has_tmpfs: bool,
+    umount: bool,
+) -> Result<()>
 where
     P: AsRef<Path>,
 {
@@ -189,7 +192,7 @@ where
                     work_dir_path.display()
                 );
                 mount_bind(module_path, target_path).with_context(|| {
-                    if UMOUNT.load(std::sync::atomic::Ordering::Relaxed) {
+                    if umount {
                         // tell ksu about this mount
                         let _ = send_unmountable(target_path);
                     }
@@ -310,7 +313,7 @@ where
                         if node.skip {
                             continue;
                         }
-                        do_magic_mount(&path, &work_dir_path, node, has_tmpfs)
+                        do_magic_mount(&path, &work_dir_path, node, has_tmpfs, umount)
                             .with_context(|| format!("magic mount {}/{name}", path.display()))
                     } else if has_tmpfs {
                         mount_mirror(&path, &work_dir_path, &entry)
@@ -342,7 +345,7 @@ where
                 if node.skip {
                     continue;
                 }
-                if let Err(e) = do_magic_mount(&path, &work_dir_path, node, has_tmpfs)
+                if let Err(e) = do_magic_mount(&path, &work_dir_path, node, has_tmpfs, umount)
                     .with_context(|| format!("magic mount {}/{name}", path.display()))
                 {
                     if has_tmpfs {
@@ -376,7 +379,7 @@ where
                 if let Err(e) = mount_change(&path, MountPropagationFlags::PRIVATE) {
                     log::warn!("make dir {} private: {e:#?}", path.display());
                 }
-                if UMOUNT.load(std::sync::atomic::Ordering::Relaxed) {
+                if umount {
                     // tell ksu about this one too
                     let _ = send_unmountable(path);
                 }
@@ -395,6 +398,7 @@ pub fn magic_mount<P>(
     module_dir: &Path,
     mount_source: &str,
     extra_partitions: &[String],
+    umount: bool,
 ) -> Result<()>
 where
     P: AsRef<Path>,
@@ -409,7 +413,7 @@ where
         mount(mount_source, &tmp_dir, "tmpfs", MountFlags::empty(), None).context("mount tmp")?;
         mount_change(&tmp_dir, MountPropagationFlags::PRIVATE).context("make tmp private")?;
 
-        let result = do_magic_mount(Path::new("/"), tmp_dir.as_path(), root, false);
+        let result = do_magic_mount(Path::new("/"), tmp_dir.as_path(), root, false, umount);
 
         if let Err(e) = unmount(&tmp_dir, UnmountFlags::DETACH) {
             log::error!("failed to unmount tmp {e}");

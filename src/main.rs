@@ -20,7 +20,7 @@ use anyhow::{Context, Result};
 use env_logger::Builder;
 use mimalloc::MiMalloc;
 
-use crate::{config::Config, defs::CONFIG_FILE_DEFAULT, magic_mount::UMOUNT};
+use crate::{config::Config, defs::CONFIG_FILE_DEFAULT};
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -102,14 +102,12 @@ fn main() -> Result<()> {
 
     utils::ensure_temp_dir(&tempdir)?;
 
-    if config.umount {
-        UMOUNT.store(true, std::sync::atomic::Ordering::Relaxed);
-    }
     let result = magic_mount::magic_mount(
         &tempdir,
         &config.moduledir,
         &config.mountsource,
         &config.partitions,
+        config.umount,
     );
 
     utils::cleanup_temp_dir(&tempdir);
