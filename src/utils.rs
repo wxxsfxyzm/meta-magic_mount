@@ -62,7 +62,7 @@ where
 
 fn is_writable_tmpfs(path: &Path) -> bool {
     if !path.is_dir() {
-        log::debug!("  {} is not a directory", path.display());
+        log::debug!("{} is not a directory", path.display());
         return false;
     }
 
@@ -74,12 +74,12 @@ fn is_writable_tmpfs(path: &Path) -> bool {
         });
 
         if !is_tmpfs {
-            log::debug!("  {} is not a tmpfs", path.display());
+            log::debug!("{} is not a tmpfs", path.display());
             return false;
         }
-        log::debug!("  {} is a tmpfs", path.display());
+        log::debug!("{} is a tmpfs", path.display());
     } else {
-        log::debug!("  failed to read /proc/mounts");
+        log::debug!("failed to read /proc/mounts");
     }
 
     let test_file = path.join(format!(".mm_test_{}", std::process::id()));
@@ -87,9 +87,9 @@ fn is_writable_tmpfs(path: &Path) -> bool {
 
     if writable {
         let _ = remove_file(&test_file);
-        log::debug!("  {} is writable", path.display());
+        log::debug!("{} is writable", path.display());
     } else {
-        log::debug!("  {} is not writable", path.display());
+        log::debug!("{} is not writable", path.display());
     }
 
     writable
