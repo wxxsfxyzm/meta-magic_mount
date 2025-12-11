@@ -7,6 +7,8 @@ const localeModules = import.meta.glob('../locales/*.json', { eager: true });
 /** @type {Record<string, any>} */
 const modulesAny = localeModules;
 
+let darkModeQuery;
+
 const createStore = () => {
   let theme = $state('auto');
   let isSystemDark = $state(false);
@@ -15,7 +17,8 @@ const createStore = () => {
   let loadedLocale = $state(null);
   let toast = $state({ id: 'init', text: '', type: 'info', visible: false });
 
-  const availableLanguages = Object.entries(modulesAny).map(([path, mod]) => {
+  const availableLanguages = Object.entries(modulesAny).map(([path, moduleData]) => {
+    const mod = /** @type {any} */ (moduleData);
     const match = path.match(/\/([^/]+)\.json$/);
     const code = match ? match[1] : 'en';
     const name = mod.default?.lang?.display || code.toUpperCase();
@@ -67,6 +70,7 @@ const createStore = () => {
 
   function setTheme(t) {
     theme = t;
+    localStorage.setItem('mm-theme', t);
     applyTheme();
   }
 
@@ -78,13 +82,10 @@ const createStore = () => {
 
   async function loadLocale(code) {
     const path = `../locales/${code}.json`;
-    // We can use the already loaded modulesAny here
-    // But we need to construct the key that matches import.meta.glob
     const entry = Object.entries(modulesAny).find(([k]) => k.endsWith(`/${code}.json`));
     if (entry) {
         loadedLocale = entry[1];
     } else {
-        // Fallback or load en
         const enEntry = Object.entries(modulesAny).find(([k]) => k.endsWith('/en.json'));
         if (enEntry) loadedLocale = enEntry[1];
     }
@@ -101,12 +102,19 @@ const createStore = () => {
     lang = savedLang;
     await loadLocale(savedLang);
 
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    isSystemDark = darkModeQuery.matches;
-    darkModeQuery.addEventListener('change', (e) => {
-      isSystemDark = e.matches;
-      applyTheme();
-    });
+    const savedTheme = localStorage.getItem('mm-theme');
+    if (savedTheme) {
+        theme = savedTheme;
+    }
+
+    if (!darkModeQuery && typeof window !== 'undefined') {
+        darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        isSystemDark = darkModeQuery.matches;
+        darkModeQuery.addEventListener('change', (e) => {
+          isSystemDark = e.matches;
+          applyTheme();
+        });
+    }
 
     try {
         const sysColor = await API.fetchSystemColor();
@@ -178,11 +186,17 @@ const createStore = () => {
   async function loadStatus() {
     loadingStatus = true;
     try {
-      device = await API.getDeviceStatus();
+      const baseDevice = await API.getDeviceStatus();
       version = await API.getVersion();
       storage = await API.getStorageUsage();
       systemInfo = await API.getSystemInfo();
       activePartitions = systemInfo.activeMounts || [];
+      
+      device = {
+        ...baseDevice,
+        kernel: systemInfo.kernel,
+        selinux: systemInfo.selinux
+      };
       
       if (modules.length === 0) {
         await loadModules();
