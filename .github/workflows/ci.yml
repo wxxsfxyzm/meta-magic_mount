@@ -43,6 +43,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         if: github.event_name == 'push'
         with:
+          prefix-key: ""
+          add-rust-environment-hash-key: "false"
           shared-key: "ndk-rust"
       - name: Install build dependencies
         run: |
