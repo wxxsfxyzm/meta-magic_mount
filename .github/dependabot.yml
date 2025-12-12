@@ -4,10 +4,18 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      crates:
+        patterns:
+          - "*"
   - package-ecosystem: "cargo" # See documentation for possible values
     directory: "/xbuild" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      crates:
+        patterns:
+          - "*"
   # Enable version updates for npm
   - package-ecosystem: "npm"
     # Look for `package.json` and `lock` files in the `root` directory
@@ -15,3 +23,7 @@ updates:
     # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "weekly"
+    groups:
+      crates:
+        patterns:
+          - "*"
