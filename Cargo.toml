@@ -39,6 +39,3 @@ codegen-units = 1
 lto = "fat"
 opt-level = 3
 strip = true
-
-[target.aarch64-linux-android.dependencies]
-android_logger = "0.15.1"
