@@ -17,6 +17,7 @@
     "info": "Info"
   },
   "status": {
+    "sysInfoTitle": "System Details",
     "deviceTitle": "Device Info",
     "moduleTitle": "Modules",
     "moduleActive": "Active Modules",

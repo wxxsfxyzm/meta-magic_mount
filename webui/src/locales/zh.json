@@ -15,6 +15,7 @@
     "info": "关于"
   },
   "status": {
+    "sysInfoTitle": "系统详情",
     "deviceTitle": "设备信息",
     "moduleTitle": "模块概览",
     "moduleActive": "挂载模块",
