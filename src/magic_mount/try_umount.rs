@@ -3,8 +3,9 @@ use std::{ffi::CString, io, os::fd::RawFd, path::Path, sync::OnceLock};
 use anyhow::Result;
 use rustix::path::Arg;
 
+const K: u32 = b'K' as u32;
 const KSU_INSTALL_MAGIC1: u32 = 0xDEAD_BEEF;
-const KSU_IOCTL_ADD_TRY_UMOUNT: u32 = 0x4000_4b12;
+const KSU_IOCTL_ADD_TRY_UMOUNT: i32 = libc::_IOW::<()>(K, 18);
 const KSU_INSTALL_MAGIC2: u32 = 0xCAFE_BABE;
 static DRIVER_FD: OnceLock<RawFd> = OnceLock::new();
 
