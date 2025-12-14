@@ -82,7 +82,7 @@ commit_parsers = [
     { message = "^perf", group = "<!-- 5 --> Performance" },
     { message = "^refactor", group = "<!-- 3 --> Refactor" },
     { message = "^style", group = "<!-- 6 --> Styling" },
-    { message = "^opt", group = "<!-- 2 --> Optimization"}
+    { message = "^opt", group = "<!-- 2 --> Optimization"},
     { message = "^test", group = "<!-- 7 --> Testing" },
     { message = "^chore\\(release\\): prepare for", skip = true },
     { message = "^chore\\(deps.*\\)", skip = true },
