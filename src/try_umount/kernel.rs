@@ -54,7 +54,7 @@ where
             libc::ioctl(fd as libc::c_int, KSU_IOCTL_ADD_TRY_UMOUNT, &cmd)
         }
     };
-    
+
     if ret < 0 {
         log::error!(
             "umount {} failed: {}",
