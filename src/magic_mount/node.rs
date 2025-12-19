@@ -90,31 +90,6 @@ impl Node {
         Ok(has_file)
     }
 
-    pub fn dir_is_replace<P>(path: P) -> Result<bool>
-    where
-        P: AsRef<Path>,
-    {
-        if let Ok(v) = lgetxattr(&path, REPLACE_DIR_XATTR)
-            && String::from_utf8_lossy(&v) == "y"
-        {
-            return Ok(true);
-        }
-
-        let c_path = CString::new(path.as_ref().as_str()?)?;
-        let fd = unsafe { libc::open(c_path.as_ptr(), libc::O_RDONLY | libc::O_DIRECTORY) };
-
-        if fd < 0 {
-            return Ok(false);
-        }
-
-        let exists = unsafe {
-            let replace = CString::new(REPLACE_DIR_FILE_NAME)?;
-            libc::faccessat(fd, replace.as_ptr(), libc::F_OK, 0)
-        };
-
-        if exists == 0 { Ok(true) } else { Ok(false) }
-    }
-
     pub fn new_root<S>(name: S) -> Self
     where
         S: AsRef<str> + Into<String>,

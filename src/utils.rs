@@ -11,10 +11,7 @@ use extattr::{Flags as XattrFlags, lsetxattr};
 use crate::defs::SELINUX_XATTR;
 use crate::defs::TMPFS_CANDIDATES;
 
-pub fn lsetfilecon<P>(path: P, con: &str) -> Result<()>
-where
-    P: AsRef<Path>,
-{
+pub fn lsetfilecon<P: AsRef<Path>>(path: P, con: &str) -> Result<()> {
     #[cfg(any(target_os = "linux", target_os = "android"))]
     lsetxattr(&path, SELINUX_XATTR, con, XattrFlags::empty()).with_context(|| {
         format!(
