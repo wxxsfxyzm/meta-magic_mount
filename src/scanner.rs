@@ -9,12 +9,12 @@ const PERFIX: &[&str] = &["system", "odm"];
 #[derive(Debug, Serialize)]
 pub struct ModuleInfo {
     pub id: String,
-    pub name: String,
-    pub version: String,
-    pub author: String,
-    pub description: String,
-    pub disabled: bool,
-    pub skip: bool,
+    name: String,
+    version: String,
+    author: String,
+    description: String,
+    disabled: bool,
+    skip: bool,
 }
 
 fn read_prop(vaule: &str, key: &str) -> Option<String> {
