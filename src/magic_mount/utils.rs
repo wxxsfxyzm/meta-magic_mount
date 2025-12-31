@@ -168,7 +168,7 @@ pub fn collect_module_files(
                 continue;
             }
 
-            has_file.insert(false != system.collect_module_files(&entry.path().join(&p))?);
+            has_file.insert(system.collect_module_files(entry.path().join(&p))?);
         }
     }
 
