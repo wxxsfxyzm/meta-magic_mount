@@ -26,19 +26,6 @@ fn default_mountsource() -> String {
     String::from("KSU")
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            moduledir: default_moduledir(),
-            mountsource: default_mountsource(),
-            verbose: false,
-            tmpfsdir: None,
-            umount: false,
-            partitions: Vec::new(),
-        }
-    }
-}
-
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "module real path: {}", self.moduledir.display())?;

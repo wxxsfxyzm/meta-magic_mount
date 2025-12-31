@@ -48,7 +48,7 @@ fn init_logger(verbose: bool) {
 }
 
 fn main() -> Result<()> {
-    let config = Config::load().unwrap_or_default();
+    let config = Config::load()?;
 
     let args: Vec<_> = std::env::args().collect();
 
